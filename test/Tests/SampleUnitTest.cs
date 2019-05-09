@@ -1,8 +1,9 @@
-using System;
-using Xunit;
-
-namespace CSharpTestProject
+namespace MarsRover.Tests
 {
+    using System;
+    using Xunit;
+
+    [Trait("TestCategory", "Unit")]
     public class SampleUnitTest
     {
         [Fact]
