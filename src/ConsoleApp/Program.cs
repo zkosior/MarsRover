@@ -12,6 +12,11 @@ namespace MarsRover.ConsoleApp
             try
             {
                 IoCInitialization.BuildServiceProvider().GetService(typeof(Interpretter));
+                while (true)
+                {
+                    var line = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line)) return;
+                }
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception exception)
