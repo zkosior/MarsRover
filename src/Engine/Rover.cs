@@ -12,7 +12,7 @@ namespace MarsRover.Engine
             (int X, int Y) direction)
         {
             if (!plain.IsPositionValid(position))
-                throw new System.ArgumentException("Position not on plain.");
+                throw new System.ArgumentException("Position not on Plain.");
 
             this.plain = plain;
             this.Position = position;
@@ -25,9 +25,12 @@ namespace MarsRover.Engine
 
         public void Move()
         {
-            this.Position =
+            var newPosition =
                 (this.Position.X + this.Direction.X,
                 this.Position.Y + this.Direction.Y);
+            if (!this.plain.IsPositionValid(newPosition))
+                throw new System.ArgumentException("Final position outside Plain.");
+            this.Position = newPosition;
         }
 
         public void RotateLeft()

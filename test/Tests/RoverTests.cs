@@ -40,7 +40,7 @@ namespace MarsRover.Tests
             this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(false);
             var error = Assert.Throws<ArgumentException>(
                 () => new Rover(this.plain, (posX, posY), (dirX, dirY)));
-            Assert.Equal("Position not on plain.", error.Message);
+            Assert.Equal("Position not on Plain.", error.Message);
         }
 
         [Theory]
@@ -51,13 +51,27 @@ namespace MarsRover.Tests
             int dirX,
             int dirY)
         {
-            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(true);
+            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(true, true);
             var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
             rover.Move();
             Assert.Equal(posX + dirX, rover.Position.X);
             Assert.Equal(posY + dirY, rover.Position.Y);
             Assert.Equal(dirX, rover.Direction.X);
             Assert.Equal(dirY, rover.Direction.Y);
+        }
+
+        [Theory]
+        [AutoData]
+        public void WhenRoverMovedOutsidePlain_Throws(
+            int posX,
+            int posY,
+            int dirX,
+            int dirY)
+        {
+            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(true, false);
+            var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
+            var error = Assert.Throws<ArgumentException>(() => rover.Move());
+            Assert.Equal("Final position outside Plain.", error.Message);
         }
 
         [Theory]
