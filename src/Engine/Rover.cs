@@ -12,13 +12,23 @@ namespace MarsRover.Engine
 
         public (int X, int Y) Position { get; private set; }
 
-        public (int X, int Y) Direction { get; }
+        public (int X, int Y) Direction { get; private set; }
 
         public void Move()
         {
             this.Position =
                 (this.Position.X + this.Direction.X,
                 this.Position.Y + this.Direction.Y);
+        }
+
+        public void RotateLeft()
+        {
+            this.Direction = (this.Direction.Y * -1, this.Direction.X);
+        }
+
+        public void RotateRight()
+        {
+            this.Direction = (this.Direction.Y, this.Direction.X * -1);
         }
     }
 
