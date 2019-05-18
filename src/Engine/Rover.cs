@@ -4,8 +4,17 @@ namespace MarsRover.Engine
 
     public class Rover
     {
-        public Rover((int X, int Y) position, (int X, int Y) direction)
+        private readonly IPlain plain;
+
+        public Rover(
+            IPlain plain,
+            (int X, int Y) position,
+            (int X, int Y) direction)
         {
+            if (!plain.IsPositionValid(position))
+                throw new System.ArgumentException("Position not on plain.");
+
+            this.plain = plain;
             this.Position = position;
             this.Direction = direction;
         }

@@ -2,12 +2,17 @@ namespace MarsRover.Tests
 {
     using AutoFixture.Xunit2;
     using MarsRover.Engine;
+    using NSubstitute;
     using System;
     using Xunit;
+
+#pragma warning disable SA1009 // Closing parenthesis must be spaced correctly
 
     [Trait("TestCategory", "Unit")]
     public class RoverTests
     {
+        private readonly IPlain plain = Substitute.For<IPlain>();
+
         [Theory]
         [AutoData]
         public void WhenRoverCreated_HasPositionOnPlainAndDirection(
@@ -16,11 +21,26 @@ namespace MarsRover.Tests
             int dirX,
             int dirY)
         {
-            var rover = new Rover((posX, posY), (dirX, dirY));
+            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(true);
+            var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
             Assert.Equal(posX, rover.Position.X);
             Assert.Equal(posY, rover.Position.Y);
             Assert.Equal(dirX, rover.Direction.X);
             Assert.Equal(dirY, rover.Direction.Y);
+        }
+
+        [Theory]
+        [AutoData]
+        public void WhenRoverCreatedWithInvalidPositionOnPlain_Throws(
+            int posX,
+            int posY,
+            int dirX,
+            int dirY)
+        {
+            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(false);
+            var error = Assert.Throws<ArgumentException>(
+                () => new Rover(this.plain, (posX, posY), (dirX, dirY)));
+            Assert.Equal("Position not on plain.", error.Message);
         }
 
         [Theory]
@@ -31,7 +51,8 @@ namespace MarsRover.Tests
             int dirX,
             int dirY)
         {
-            var rover = new Rover((posX, posY), (dirX, dirY));
+            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(true);
+            var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
             rover.Move();
             Assert.Equal(posX + dirX, rover.Position.X);
             Assert.Equal(posY + dirY, rover.Position.Y);
@@ -47,7 +68,8 @@ namespace MarsRover.Tests
             int dirX,
             int dirY)
         {
-            var rover = new Rover((posX, posY), (dirX, dirY));
+            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(true);
+            var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
             rover.RotateLeft();
             Assert.Equal(posX, rover.Position.X);
             Assert.Equal(posY, rover.Position.Y);
@@ -63,7 +85,8 @@ namespace MarsRover.Tests
             int dirX,
             int dirY)
         {
-            var rover = new Rover((posX, posY), (dirX, dirY));
+            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(true);
+            var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
             rover.RotateRight();
             Assert.Equal(posX, rover.Position.X);
             Assert.Equal(posY, rover.Position.Y);
@@ -71,4 +94,6 @@ namespace MarsRover.Tests
             Assert.Equal(-1 * dirX, rover.Direction.Y);
         }
     }
+
+#pragma warning restore SA1009 // Closing parenthesis must be spaced correctly
 }
