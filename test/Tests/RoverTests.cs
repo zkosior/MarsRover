@@ -93,6 +93,46 @@ namespace MarsRover.Tests
 
         [Theory]
         [AutoData]
+        public void FourLeftRotations_ReturnsToTheSamePositionAndDirection(
+            int posX,
+            int posY,
+            int dirX,
+            int dirY)
+        {
+            this.plain.IsPositionValid(Arg.Any<int>(), Arg.Any<int>()).Returns(true);
+            var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
+            rover.RotateLeft();
+            rover.RotateLeft();
+            rover.RotateLeft();
+            rover.RotateLeft();
+            Assert.Equal(posX, rover.Position.X);
+            Assert.Equal(posY, rover.Position.Y);
+            Assert.Equal(dirX, rover.Direction.X);
+            Assert.Equal(dirY, rover.Direction.Y);
+        }
+
+        [Theory]
+        [AutoData]
+        public void FourRightRotations_ReturnsToTheSamePositionAndDirection(
+            int posX,
+            int posY,
+            int dirX,
+            int dirY)
+        {
+            this.plain.IsPositionValid(Arg.Any<int>(), Arg.Any<int>()).Returns(true);
+            var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
+            rover.RotateRight();
+            rover.RotateRight();
+            rover.RotateRight();
+            rover.RotateRight();
+            Assert.Equal(posX, rover.Position.X);
+            Assert.Equal(posY, rover.Position.Y);
+            Assert.Equal(dirX, rover.Direction.X);
+            Assert.Equal(dirY, rover.Direction.Y);
+        }
+
+        [Theory]
+        [AutoData]
         public void WhenRoverRotatedRight_HasSamePositionOnPlainAndNewDirection(
             int posX,
             int posY,
