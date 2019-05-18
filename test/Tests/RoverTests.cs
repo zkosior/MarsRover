@@ -21,7 +21,7 @@ namespace MarsRover.Tests
             int dirX,
             int dirY)
         {
-            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(true);
+            this.plain.IsPositionValid(Arg.Any<int>(), Arg.Any<int>()).Returns(true);
             var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
             Assert.Equal(posX, rover.Position.X);
             Assert.Equal(posY, rover.Position.Y);
@@ -37,7 +37,7 @@ namespace MarsRover.Tests
             int dirX,
             int dirY)
         {
-            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(false);
+            this.plain.IsPositionValid(Arg.Any<int>(), Arg.Any<int>()).Returns(false);
             var error = Assert.Throws<ArgumentException>(
                 () => new Rover(this.plain, (posX, posY), (dirX, dirY)));
             Assert.Equal("Position not on Plain.", error.Message);
@@ -51,7 +51,7 @@ namespace MarsRover.Tests
             int dirX,
             int dirY)
         {
-            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(true, true);
+            this.plain.IsPositionValid(Arg.Any<int>(), Arg.Any<int>()).Returns(true, true);
             var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
             rover.Move();
             Assert.Equal(posX + dirX, rover.Position.X);
@@ -68,7 +68,7 @@ namespace MarsRover.Tests
             int dirX,
             int dirY)
         {
-            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(true, false);
+            this.plain.IsPositionValid(Arg.Any<int>(), Arg.Any<int>()).Returns(true, false);
             var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
             var error = Assert.Throws<ArgumentException>(() => rover.Move());
             Assert.Equal("Final position outside Plain.", error.Message);
@@ -82,7 +82,7 @@ namespace MarsRover.Tests
             int dirX,
             int dirY)
         {
-            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(true);
+            this.plain.IsPositionValid(Arg.Any<int>(), Arg.Any<int>()).Returns(true);
             var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
             rover.RotateLeft();
             Assert.Equal(posX, rover.Position.X);
@@ -99,7 +99,7 @@ namespace MarsRover.Tests
             int dirX,
             int dirY)
         {
-            this.plain.IsPositionValid(Arg.Any<(int, int)>()).Returns(true);
+            this.plain.IsPositionValid(Arg.Any<int>(), Arg.Any<int>()).Returns(true);
             var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
             rover.RotateRight();
             Assert.Equal(posX, rover.Position.X);

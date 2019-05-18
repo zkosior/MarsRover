@@ -2,6 +2,6 @@ namespace MarsRover.Engine
 {
     public interface IPlain
     {
-        bool IsPositionValid((int, int) p);
+        bool IsPositionValid(int x, int y);
     }
 }
