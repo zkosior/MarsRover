@@ -10,9 +10,16 @@ namespace MarsRover.Engine
             this.Direction = direction;
         }
 
-        public (int X, int Y) Position { get; }
+        public (int X, int Y) Position { get; private set; }
 
         public (int X, int Y) Direction { get; }
+
+        public void Move()
+        {
+            this.Position =
+                (this.Position.X + this.Direction.X,
+                this.Position.Y + this.Direction.Y);
+        }
     }
 
 #pragma warning restore SA1008 // Opening parenthesis must be spaced correctly

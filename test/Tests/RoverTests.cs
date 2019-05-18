@@ -22,5 +22,21 @@ namespace MarsRover.Tests
             Assert.Equal(dirX, rover.Direction.X);
             Assert.Equal(dirY, rover.Direction.Y);
         }
+
+        [Theory]
+        [AutoData]
+        public void WhenRoverMoved_HasNewPositionOnPlainAndSameDirection(
+            int posX,
+            int posY,
+            int dirX,
+            int dirY)
+        {
+            var rover = new Rover((posX, posY), (dirX, dirY));
+            rover.Move();
+            Assert.Equal(posX + dirX, rover.Position.X);
+            Assert.Equal(posY + dirY, rover.Position.Y);
+            Assert.Equal(dirX, rover.Direction.X);
+            Assert.Equal(dirY, rover.Direction.Y);
+        }
     }
 }
