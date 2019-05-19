@@ -8,6 +8,8 @@ namespace MarsRover.ConsoleApp
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
+#pragma warning disable SA1008 // Opening parenthesis must be spaced correctly
+
     [ExcludeFromCodeCoverage]
     internal class Program
     {
@@ -15,33 +17,21 @@ namespace MarsRover.ConsoleApp
         {
             try
             {
-                if (!InputParser.TryGetPlainSetup(
-                    Console.ReadLine(),
-                    out var maxCoordinates)) return;
-                var plain = new Plain(maxCoordinates.X, maxCoordinates.Y);
+                if (!TryGetPlainDimensions(out var max))
+                    return;
+                var plain = new Plain(max.X, max.Y);
                 var rovers = new List<Rover>();
 
                 while (true)
                 {
-                    var line = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(line)) break;
+                    if (!TryGetNextLine(out var line))
+                        break;
+                    if (!TryGetRoverConfig(line, out var position, out char direction))
+                        return;
+                    if (!TryGetCommands(out IEnumerable<char> commands))
+                        return;
 
-                    if (!InputParser.TryGetRoverSetup(
-                        line,
-                        Directions.AllowedDirections,
-                        out var position,
-                        out var direction)) return;
-
-                    line = Console.ReadLine();
-                    if (!InputParser.TryGetCommands(
-                            line,
-                            Commands.AllowedCommands,
-                            out var commands)) return;
-
-                    var rover = new Rover(
-                        plain,
-                        position,
-                        Directions.DecodeDirection(direction));
+                    var rover = CreateRover(plain, position, direction);
                     rovers.Add(rover);
 
                     ExecuteCommands(rover, commands.Select(Commands.DecodeCommand));
@@ -51,12 +41,58 @@ namespace MarsRover.ConsoleApp
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception exception)
+#pragma warning restore CA1031 // Do not catch general exception types
             {
                 // not all exception can be caught here and not all should be,
                 // but right here I just want to gracefully exit application
                 Console.WriteLine(exception.Message);
             }
-#pragma warning restore CA1031 // Do not catch general exception types
+        }
+
+        private static bool TryGetPlainDimensions(
+            out (int X, int Y) maxCoordinates)
+        {
+            return InputParser.TryGetPlainSetup(
+                Console.ReadLine(),
+                out maxCoordinates);
+        }
+
+        private static bool TryGetNextLine(out string line)
+        {
+            line = Console.ReadLine();
+            return string.IsNullOrWhiteSpace(line);
+        }
+
+        private static bool TryGetRoverConfig(
+            string line,
+            out (int x, int y) position,
+            out char direction)
+        {
+            return InputParser.TryGetRoverSetup(
+                line,
+                Directions.AllowedDirections,
+                out position,
+                out direction);
+        }
+
+        private static bool TryGetCommands(
+            out IEnumerable<char> commands)
+        {
+            return InputParser.TryGetCommands(
+                Console.ReadLine(),
+                Commands.AllowedCommands,
+                out commands);
+        }
+
+        private static Rover CreateRover(
+            Plain plain,
+            (int x, int y) position,
+            char direction)
+        {
+            return new Rover(
+                plain,
+                position,
+                Directions.DecodeDirection(direction));
         }
 
         private static void ExecuteCommands(
@@ -69,7 +105,8 @@ namespace MarsRover.ConsoleApp
             }
         }
 
-        private static void PrintRoverPositions(IEnumerable<Rover> rovers)
+        private static void PrintRoverPositions(
+            IEnumerable<Rover> rovers)
         {
             foreach (var rover in rovers)
             {
@@ -80,4 +117,6 @@ namespace MarsRover.ConsoleApp
             }
         }
     }
+
+#pragma warning restore SA1008 // Opening parenthesis must be spaced correctly
 }

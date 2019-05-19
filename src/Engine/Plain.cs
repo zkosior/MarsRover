@@ -6,20 +6,22 @@ namespace MarsRover.Engine
 
     public class Plain : IPlain
     {
-        private readonly (int X, int Y) maxCoordinates;
+        private readonly int maxX;
+        private readonly int maxY;
 
         public Plain(int maxX, int maxY)
         {
             Debug.Assert(maxX > 0 && maxY > 0, "Incorrect Plain maxCoordinates.");
-            this.maxCoordinates = (maxX, maxY);
+            this.maxX = maxX;
+            this.maxY = maxY;
         }
 
         public bool IsPositionValid(int x, int y)
         {
             return x >= 0 &&
-                   x <= this.maxCoordinates.X &&
+                   x <= this.maxX &&
                    y >= 0 &&
-                   y <= this.maxCoordinates.Y;
+                   y <= this.maxY;
         }
     }
 
