@@ -20,9 +20,9 @@ namespace MarsRover.Tests
         [InlineData('W', -1, 0)]
         public void DecodesDirections(char direction, int x, int y)
         {
-            var (X, Y) = Directions.DecodeDirection(direction);
-            Assert.Equal(x, X);
-            Assert.Equal(y, Y);
+            var (outputX, outputY) = Directions.DecodeDirection(direction);
+            Assert.Equal(x, outputX);
+            Assert.Equal(y, outputY);
         }
 
         [Theory]
