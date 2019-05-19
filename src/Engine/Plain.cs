@@ -1,24 +1,25 @@
 namespace MarsRover.Engine
 {
+    using System.Diagnostics;
+
 #pragma warning disable SA1008 // Opening parenthesis must be spaced correctly
 
     public class Plain : IPlain
     {
-        private readonly (int X, int Y) dimensions;
+        private readonly (int X, int Y) maxCoordinates;
 
-        public Plain(int x, int y)
+        public Plain(int maxX, int maxY)
         {
-            if (x <= 0 || y <= 0)
-                throw new System.ArgumentException("Incorrect Plain dimensions.");
-            this.dimensions = (x, y);
+            Debug.Assert(maxX > 0 && maxY > 0, "Incorrect Plain maxCoordinates.");
+            this.maxCoordinates = (maxX, maxY);
         }
 
         public bool IsPositionValid(int x, int y)
         {
-            return x > 0 &&
-                   x < this.dimensions.X &&
-                   y > 0 &&
-                   y < this.dimensions.Y;
+            return x >= 0 &&
+                   x <= this.maxCoordinates.X &&
+                   y >= 0 &&
+                   y <= this.maxCoordinates.Y;
         }
     }
 
