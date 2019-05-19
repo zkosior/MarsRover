@@ -1,6 +1,8 @@
 namespace MarsRover.ConsoleApp
 {
     using MarsRover.Engine;
+    using MarsRover.Engine.Language;
+    using MarsRover.Engine.RoverCommands;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -22,20 +24,22 @@ namespace MarsRover.ConsoleApp
                 {
                     var line = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(line)) break;
-                    if (!Interpreter.TryGetRoverSetup(line, out var position, out var direction)) return;
-                    if (!Interpreter.TryGetCommands(Console.ReadLine(), out var commands)) return;
+
+                    if (!Interpreter.TryGetRoverSetup(
+                        line,
+                        out var position,
+                        out var direction) ||
+                        !Interpreter.TryGetCommands(
+                            Console.ReadLine(),
+                            out var commands)) return;
+
                     var rover = new Rover(plain, position, direction);
                     rovers.Add(rover);
-                    foreach (var command in commands)
-                    {
-                        command.Execute(rover);
-                    }
+
+                    ExecuteCommands(rover, commands);
                 }
 
-                foreach (var rover in rovers)
-                {
-                    Console.WriteLine($"{rover.Position.X} {rover.Position.Y} {Interpreter.EncodeDirection(rover.Direction)}");
-                }
+                PrintRoverPositions(rovers);
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception exception)
@@ -45,6 +49,27 @@ namespace MarsRover.ConsoleApp
                 Console.WriteLine(exception.Message);
             }
 #pragma warning restore CA1031 // Do not catch general exception types
+        }
+
+        private static void ExecuteCommands(
+            Rover rover,
+            IEnumerable<ICommand> commands)
+        {
+            foreach (var command in commands)
+            {
+                command.Execute(rover);
+            }
+        }
+
+        private static void PrintRoverPositions(IEnumerable<Rover> rovers)
+        {
+            foreach (var rover in rovers)
+            {
+                int x = rover.Position.X;
+                int y = rover.Position.Y;
+                char direction = Directions.EncodeDirection(rover.Direction);
+                Console.WriteLine($"{x} {y} {direction}");
+            }
         }
     }
 }
