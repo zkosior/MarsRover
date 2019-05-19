@@ -6,6 +6,7 @@ namespace MarsRover.ConsoleApp
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
 
     [ExcludeFromCodeCoverage]
     internal class Program
@@ -14,7 +15,7 @@ namespace MarsRover.ConsoleApp
         {
             try
             {
-                if (!Interpreter.TryGetPlainSetup(
+                if (!InputParser.TryGetPlainSetup(
                     Console.ReadLine(),
                     out var maxCoordinates)) return;
                 var plain = new Plain(maxCoordinates.X, maxCoordinates.Y);
@@ -25,18 +26,25 @@ namespace MarsRover.ConsoleApp
                     var line = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(line)) break;
 
-                    if (!Interpreter.TryGetRoverSetup(
+                    if (!InputParser.TryGetRoverSetup(
                         line,
+                        Directions.AllowedDirections,
                         out var position,
-                        out var direction) ||
-                        !Interpreter.TryGetCommands(
-                            Console.ReadLine(),
+                        out var direction)) return;
+
+                    line = Console.ReadLine();
+                    if (!InputParser.TryGetCommands(
+                            line,
+                            Commands.AllowedCommands,
                             out var commands)) return;
 
-                    var rover = new Rover(plain, position, direction);
+                    var rover = new Rover(
+                        plain,
+                        position,
+                        Directions.DecodeDirection(direction));
                     rovers.Add(rover);
 
-                    ExecuteCommands(rover, commands);
+                    ExecuteCommands(rover, commands.Select(Commands.DecodeCommand));
                 }
 
                 PrintRoverPositions(rovers);

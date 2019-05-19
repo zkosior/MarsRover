@@ -1,14 +1,12 @@
 namespace MarsRover.Engine
 {
-    using MarsRover.Engine.Language;
-    using MarsRover.Engine.RoverCommands;
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
 #pragma warning disable SA1008 // Opening parenthesis must be spaced correctly
 
-    public static class Interpreter
+    public static class InputParser
     {
         public static bool TryGetPlainSetup(
             string lineInput,
@@ -28,8 +26,9 @@ namespace MarsRover.Engine
 
         public static bool TryGetRoverSetup(
             string lineInput,
+            IEnumerable<char> allowedCharacters,
             out (int x, int y) position,
-            out (int x, int y) direction)
+            out char direction)
         {
             position = default;
             direction = default;
@@ -38,25 +37,23 @@ namespace MarsRover.Engine
                 !int.TryParse(elements[0], out var x) ||
                 !int.TryParse(elements[1], out var y) ||
                 elements[2].Length != 1 ||
-                !Directions.AllowedDirections.Contains(elements[2][0]) ||
-                x <= 0 ||
-                y <= 0) return false;
+                lineInput.Any(p => !allowedCharacters.Contains(elements[2][0])) ||
+                x < 0 ||
+                y < 0) return false;
             position = (x, y);
-            direction = Directions.DecodeDirection(elements[2][0]);
+            direction = elements[2][0];
             return true;
         }
 
-        public static bool TryGetCommands(string lineInput, out IEnumerable<ICommand> commands)
+        public static bool TryGetCommands(
+            string lineInput,
+            IEnumerable<char> allowedCharacters,
+            out IEnumerable<char> commands)
         {
-            commands = Array.Empty<ICommand>();
-            if (lineInput.Any(p => !Commands.AllowedCommands.Contains(p))) return false;
-            var decodedCommands = new List<ICommand>();
-            foreach (var character in lineInput)
-            {
-                decodedCommands.Add(Commands.DecodeCommand(character));
-            }
-
-            commands = decodedCommands;
+            commands = Array.Empty<char>();
+            if (string.IsNullOrWhiteSpace(lineInput) ||
+                lineInput.Any(p => !allowedCharacters.Contains(p))) return false;
+            commands = lineInput;
             return true;
         }
     }
