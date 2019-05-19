@@ -1,5 +1,7 @@
 namespace MarsRover.Engine
 {
+    using MarsRover.Engine.RoverCommands;
+
 #pragma warning disable SA1008 // Opening parenthesis must be spaced correctly
 
     public class Rover
@@ -22,6 +24,9 @@ namespace MarsRover.Engine
         public (int X, int Y) Direction { get; set; }
 
         public IPlain Plain { get; set; }
+
+        public void Execute(ICommand command) =>
+            command.Execute(this);
     }
 
 #pragma warning restore SA1008 // Opening parenthesis must be spaced correctly

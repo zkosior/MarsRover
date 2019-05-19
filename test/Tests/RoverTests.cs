@@ -2,6 +2,7 @@ namespace MarsRover.Tests
 {
     using AutoFixture.Xunit2;
     using MarsRover.Engine;
+    using MarsRover.Engine.RoverCommands;
     using NSubstitute;
     using System;
     using Xunit;
@@ -41,6 +42,22 @@ namespace MarsRover.Tests
             var error = Assert.Throws<ArgumentException>(
                 () => new Rover(this.plain, (posX, posY), (dirX, dirY)));
             Assert.Equal("Position not on Plain.", error.Message);
+        }
+
+        [Theory]
+        [AutoData]
+        public void ExecutesCommands(
+            int posX,
+            int posY,
+            int dirX,
+            int dirY)
+        {
+            this.plain.IsPositionValid(Arg.Any<int>(), Arg.Any<int>()).Returns(true);
+            var rover = new Rover(this.plain, (posX, posY), (dirX, dirY));
+            var command = Substitute.For<ICommand>();
+
+            rover.Execute(command);
+            command.Received(1).Execute(Arg.Is(rover));
         }
     }
 

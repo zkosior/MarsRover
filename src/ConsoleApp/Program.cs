@@ -57,7 +57,7 @@ namespace MarsRover.ConsoleApp
         {
             foreach (var command in commands)
             {
-                command.Execute(rover);
+                rover.Execute(command);
             }
         }
 
