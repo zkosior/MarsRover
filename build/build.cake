@@ -125,7 +125,7 @@ Task("BuildConsoleApp")
                 Configuration = configuration,
                 Runtime = runtime,
                 OutputDirectory = "../publish",
-                SelfContained = true,
+                SelfContained = false,
             });
     });
 
